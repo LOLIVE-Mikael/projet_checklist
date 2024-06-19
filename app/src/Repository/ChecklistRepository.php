@@ -2,22 +2,22 @@
 
 namespace App\Repository;
 
-use App\Entity\Checklists;
+use App\Entity\Checklist;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<Checklists>
+ * @extends ServiceEntityRepository<Checklist>
  */
-class ChecklistsRepository extends ServiceEntityRepository
+class ChecklistRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Checklists::class);
+        parent::__construct($registry, Checklist::class);
     }
 
     //    /**
-    //     * @return Checklists[] Returns an array of Checklists objects
+    //     * @return Checklists[] Returns an array of Checklist objects
     //     */
     //    public function findByExampleField($value): array
     //    {
@@ -31,7 +31,7 @@ class ChecklistsRepository extends ServiceEntityRepository
     //        ;
     //    }
 
-    //    public function findOneBySomeField($value): ?Checklists
+    //    public function findOneBySomeField($value): ?Checklist
     //    {
     //        return $this->createQueryBuilder('c')
     //            ->andWhere('c.exampleField = :val')

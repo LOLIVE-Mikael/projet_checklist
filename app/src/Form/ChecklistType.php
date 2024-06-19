@@ -2,15 +2,15 @@
 
 namespace App\Form;
 
-use App\Entity\Checklists;
-use App\Entity\Tasks;
+use App\Entity\Checklist;
+use App\Entity\Task;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class ChecklistsType extends AbstractType
+class ChecklistType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -25,7 +25,7 @@ class ChecklistsType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Checklists::class,
+            'data_class' => Checklist::class,
         ]);
     }
 }

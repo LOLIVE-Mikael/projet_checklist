@@ -1,15 +1,15 @@
 <?php
 namespace App\Service;
 
-use App\Entity\Checklists;
-use App\Form\ChecklistsType; 
-use App\Repository\ChecklistsRepository;
+use App\Entity\Checklist;
+use App\Form\ChecklistType; 
+use App\Repository\ChecklistRepository;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
 
-class ChecklistsFormService
+class ChecklistFormService
 {
     private $formFactory;
 
@@ -18,7 +18,7 @@ class ChecklistsFormService
         $this->formFactory = $formFactory;
     } 
 
-    public function createSelectionForm(ChecklistsRepository $checklistsRepository, Checklists $checklist = null): FormInterface
+    public function createSelectionForm(ChecklistRepository $checklistRepository, Checklist $checklist = null): FormInterface
     {
         // Charger les données de la checklist si nécessaire
         if ($checklist) {
@@ -26,7 +26,7 @@ class ChecklistsFormService
         }
 
         // Récupérer toutes les checklists
-        $checklists = $checklistsRepository->findAll();
+        $checklists = $checklistRepository->findAll();
 
         return $this->formFactory->createBuilder()
             ->add('checklist', ChoiceType::class, [
@@ -46,10 +46,10 @@ class ChecklistsFormService
             ->getForm();
     }
 
-    public function createAddForm(Checklists $checklist = null)
+    public function createAddForm(Checklist $checklist = null)
     {
         // Créer un formulaire en utilisant le formulaire ChecklistType
-        $form = $this->formFactory->createBuilder(ChecklistsType::class,$checklist)
+        $form = $this->formFactory->createBuilder(ChecklistType::class,$checklist)
             ->add('creer', SubmitType::class)
             ->getForm();
 

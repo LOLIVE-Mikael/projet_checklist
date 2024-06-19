@@ -2,15 +2,15 @@
 
 namespace App\Entity;
 
-use App\Repository\ChecklistsRepository;
+use App\Repository\ChecklistRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use DateInterval;
 use DateTime;
 
-#[ORM\Entity(repositoryClass: ChecklistsRepository::class)]
-class Checklists
+#[ORM\Entity(repositoryClass: ChecklistRepository::class)]
+class Checklist
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -21,9 +21,9 @@ class Checklists
     private ?string $title;
 
     /**
-     * @var Collection<int, Tasks>
+     * @var Collection<int, Task>
      */
-    #[ORM\ManyToMany(targetEntity: Tasks::class, inversedBy: 'checklists', cascade: ["persist"])]
+    #[ORM\ManyToMany(targetEntity: Task::class, inversedBy: 'checklist', cascade: ["persist"])]
     private Collection $tasks;
 
     public function __construct()
@@ -49,14 +49,14 @@ class Checklists
     }
 
     /**
-     * @return Collection<int, Tasks>
+     * @return Collection<int, Task>
      */
     public function getTasks(): Collection
     {
         return $this->tasks;
     }
 
-    public function addTask(Tasks $task): static
+    public function addTask(Task $task): static
     {
         if (!$this->tasks->contains($task)) {
             $this->tasks->add($task);
@@ -65,7 +65,7 @@ class Checklists
         return $this;
     }
 
-    public function removeTask(Tasks $task): static
+    public function removeTask(Task $task): static
     {
         $this->tasks->removeElement($task);
 

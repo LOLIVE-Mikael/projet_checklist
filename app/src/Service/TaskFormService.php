@@ -7,40 +7,40 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
-use App\Repository\TasksRepository;
-use App\Entity\Checklists;
-use App\Entity\Tasks;
-use App\Form\TasksType;
+use App\Repository\TaskRepository;
+use App\Entity\Checklist;
+use App\Entity\Task;
+use App\Form\TaskType;
 
 /*
 use Symfony\Component\Form\Extension\Core\Type\TextType;
  */
 
-class TasksFormService
+class TaskFormService
 {
 
     private $formFactory;
-    private $tasksRepository;
+    private $TaskRepository;
 
-    public function __construct(FormFactoryInterface $formFactory, TasksRepository $tasksRepository)
+    public function __construct(FormFactoryInterface $formFactory, TaskRepository $TaskRepository)
     {
         $this->formFactory = $formFactory;
-        $this->tasksRepository = $tasksRepository;
+        $this->TaskRepository = $TaskRepository;
     }
 
-    public function createAddTaskForm(Checklists $checklist = null)
+    public function createAddTaskForm(Checklist $checklist = null)
     {
         if ($checklist) {
-            $choices = $this->tasksRepository->findTasksNotInChecklist($checklist);
+            $choices = $this->TaskRepository->findTasksNotInChecklist($checklist);
             $idChecklist = $checklist->getId();
 			} else {
-            $choices = $this->tasksRepository->findAll();
+            $choices = $this->TaskRepository->findAll();
             $idChecklist = null;
         }
 
-        $task = new Tasks();
+        $task = new Task();
 
-        $form = $this->formFactory->create(TasksType::class, $task, [
+        $form = $this->formFactory->create(TaskType::class, $task, [
 				'requis' => false,
 				]);
 		

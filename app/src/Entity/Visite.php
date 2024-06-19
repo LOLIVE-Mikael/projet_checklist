@@ -2,12 +2,12 @@
 
 namespace App\Entity;
 
-use App\Repository\VisitesRepository;
+use App\Repository\VisiteRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: VisitesRepository::class)]
-class Visites
+#[ORM\Entity(repositoryClass: VisiteRepository::class)]
+class Visite
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -15,13 +15,13 @@ class Visites
     private ?int $id = null;
 
     #[ORM\ManyToOne]
-    private ?Sites $site;
+    private ?Site $site;
 
     #[ORM\ManyToOne]
-    private ?Users $user;
+    private ?User $user;
 
     #[ORM\ManyToOne]
-    private ?Checklists $checklist;
+    private ?Checklist $checklist;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $date;
@@ -31,36 +31,36 @@ class Visites
         return $this->id;
     }
 
-    public function getSite(): ?Sites
+    public function getSite(): ?Site
     {
         return $this->site;
     }
 
-    public function setSite(?Sites $site): static
+    public function setSite(?Site $site): static
     {
         $this->site = $site;
 
         return $this;
     }
 
-    public function getUser(): ?Users
+    public function getUser(): ?User
     {
         return $this->user;
     }
 
-    public function setUser(?Users $User): static
+    public function setUser(?User $User): static
     {
         $this->user = $User;
 
         return $this;
     }
 
-    public function getChecklist(): ?Checklists
+    public function getChecklist(): ?Checklist
     {
         return $this->checklist;
     }
 
-    public function setChecklist(?Checklists $checklist): static
+    public function setChecklist(?Checklist $checklist): static
     {
         $this->checklist = $checklist;
 

@@ -26,10 +26,10 @@
 	{{ form_end(formnew) }}
 	<div id="task-list">
 	{% if tasks is defined and tasks is not empty %}
-		{% include 'checklists/tasks.html.twig' with { 'tasks': tasks, 'checklist':checklist } %}
+		{% include 'checklist/tasks.html.twig' with { 'tasks': tasks, 'checklist':checklist } %}
 	{% endif %}
     {% if formadd is defined %}
-		{% include 'checklists/formadd.html.twig' with { 'formadd': formadd } %}
+		{% include 'checklist/formadd.html.twig' with { 'formadd': formadd } %}
 
 	{% endif %}
 	</div>

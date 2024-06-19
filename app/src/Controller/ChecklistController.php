@@ -2,50 +2,51 @@
 
 namespace App\Controller;
 
-use App\Entity\Checklists;
+use App\Entity\Checklist;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use App\Repository\ChecklistsRepository;
-use App\Repository\TasksRepository;
-use App\Service\TasksFormService;
-use App\Service\ChecklistsFormService;
+use App\Repository\ChecklistRepository;
+use App\Repository\TaskRepository;
+use App\Service\TaskFormService;
+use App\Service\ChecklistFormService;
 use Doctrine\ORM\EntityManagerInterface;
 
-class ChecklistsController extends AbstractController
+class ChecklistController extends AbstractController
 {
 
-    private $tasksFormService;
-    private $checklistsFormService;
+    private $taskFormService;
+    private $checklistFormService;
 
-    public function __construct(TasksFormService $tasksFormService, ChecklistsFormService $checklistsFormService)
+    public function __construct(TaskFormService $taskFormService, ChecklistFormService $checklistFormService)
     {
-        $this->tasksFormService = $tasksFormService;
-        $this->checklistsFormService = $checklistsFormService;
+        $this->taskFormService = $taskFormService;
+        $this->checklistFormService = $checklistFormService;
     }
 
 	
     #[Route('/checklist/{checklistId?}', name: 'checklist_dashboard', requirements: ['checklistId' => '\d+'])]
-    public function index(?int $checklistId, Request $request, ChecklistsRepository $checklistsRepository, TasksRepository $tasksRepository): Response
+    public function index(?int $checklistId, Request $request, ChecklistRepository $checklistRepository, TaskRepository $taskRepository): Response
     {	
 		if($checklistId){
-			$selectedChecklist = $checklistsRepository->find($checklistId);
+			$selectedChecklist = $checklistRepository->find($checklistId);
 		} else {
 			$selectedChecklist=NULL;
 		}
 		
         // Créer le formulaire de sélection de la checklist et le formulaire création de checklist
-        $form = $this->checklistsFormService->createSelectionForm($checklistsRepository,$selectedChecklist);
-        $formnew = $this->checklistsFormService->createAddForm();
+        $form = $this->checklistFormService->createSelectionForm($checklistRepository,$selectedChecklist);
+
+        $formnew = $this->checklistFormService->createAddForm();
 
         if ($selectedChecklist) {
             // Récupérer les tâches de la checklist sélectionnée
 			$tasks = $selectedChecklist->getTasks();
-			$formAdd = $this->tasksFormService->createAddTaskForm($selectedChecklist);
+			$formAdd = $this->taskFormService->createAddTaskForm($selectedChecklist);
 
 			// Afficher le formulaire dans le template Twig
-			return $this->render('checklists/index.html.twig', [
+			return $this->render('checklist/index.html.twig', [
 				'form' => $form->createView(),
 				'formnew' => $formnew->createView(),
 				'formadd' => $formAdd->createView(),
@@ -54,7 +55,7 @@ class ChecklistsController extends AbstractController
 			]);
         }
         // Afficher le formulaire dans le template Twig
-		return $this->render('checklists/index.html.twig', [
+		return $this->render('checklist/index.html.twig', [
             'form' => $form->createView(),
 			'formnew' => $formnew->createView(),
 			'checklist' => '',
@@ -62,9 +63,9 @@ class ChecklistsController extends AbstractController
     }
 
     #[Route('/checklist/selection', name: 'checklist_selection_checklist')]
-    public function readChecklist(Request $request,ChecklistsRepository $checklistsRepository, EntityManagerInterface $entityManager): Response
+    public function readChecklist(Request $request,ChecklistRepository $checklistRepository, EntityManagerInterface $entityManager): Response
     {
-		$form = $this->checklistsFormService->createSelectionForm($checklistsRepository);
+		$form = $this->checklistFormService->createSelectionForm($checklistRepository);
 		$form->handleRequest($request);
 		$checklist = $form->get('checklist')->getData();
 		if ($form->getClickedButton()->getName() == 'delete'){
@@ -84,16 +85,16 @@ class ChecklistsController extends AbstractController
 	}
 	
     #[Route('/checklist/addtache', name: 'checklist_add_task')]	
-	public function handleAddTask(EntityManagerInterface $entityManager, Request $request, ChecklistsRepository $checklistsRepository, TasksRepository $tasksRepository)
+	public function handleAddTask(EntityManagerInterface $entityManager, Request $request, ChecklistRepository $checklistRepository, TaskRepository $taskRepository)
     {
 		// Récupérer les données soumises par le formulaire
-		$formAdd = $this->tasksFormService->createAddTaskForm();
+		$formAdd = $this->taskFormService->createAddTaskForm();
 		
 		$formAdd->handleRequest($request);
 		$newTask = $formAdd->getData();		
 		$selectedtask = $formAdd->get('task')->getData();
-        $selectedChecklist = $checklistsRepository->find($formAdd->get('checklist_id')->getData());
-		$selectedChecklist->getTasks();	
+        $selectedChecklist = $checklistRepository->find($formAdd->get('checklist_id')->getData());
+		$selectedChecklist->getTasks();
         if (!$selectedtask && $newTask->getTitle()) {
             // Associer la nouvelle tâche à la checklist
             $selectedChecklist->addTask($newTask);
@@ -124,10 +125,10 @@ class ChecklistsController extends AbstractController
 	}
 	
 	#[Route('/checklist/removetask/{taskId}/{checklistId}', name: 'checklist_remove_task')]
-	public function removeTask(int $taskId, int $checklistId, EntityManagerInterface $entityManager, TasksRepository $tasksRepository, ChecklistsRepository $checklistsRepository): Response
+	public function removeTask(int $taskId, int $checklistId, EntityManagerInterface $entityManager, TaskRepository $taskRepository, ChecklistRepository $checklistRepository): Response
 	{
-		$task = $tasksRepository->find($taskId);
-		$checklist = $checklistsRepository->find($checklistId);
+		$task = $taskRepository->find($taskId);
+		$checklist = $checklistRepository->find($checklistId);
 
 		if (!$task || !$checklist) {
 			throw $this->createNotFoundException('La tâche ou la checklist n\'a pas été trouvée.');
@@ -143,8 +144,8 @@ class ChecklistsController extends AbstractController
     #[Route('/checklist/addchecklist', name: 'checklist_ajout_checklist')]	
 	public function handleAddChecklist(EntityManagerInterface $entityManager, Request $request)
 	{
-		$checklist = new Checklists();
-		$form = $this->checklistsFormService->createAddForm($checklist);
+		$checklist = new Checklist();
+		$form = $this->checklistFormService->createAddForm($checklist);
 		$form->handleRequest($request);
 		
 		if ($form->isSubmitted() && $form->isValid()) {

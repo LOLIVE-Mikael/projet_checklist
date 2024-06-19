@@ -2,11 +2,11 @@
     <ul id="ul-task-list">	
 		{% for task in tasks %}
 
-			{% include 'checklists/task.html.twig' with { 'task': task } %}
+			{% include 'checklist/task.html.twig' with { 'task': task } %}
 
 
 		{% endfor %}
     </ul>
 	<div id="duration_checklist">	
-		{% include 'checklists/duration.html.twig' with { 'checklist': checklist } %}
+		{% include 'checklist/duration.html.twig' with { 'checklist': checklist } %}
 	</div>

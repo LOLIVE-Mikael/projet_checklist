@@ -2,28 +2,28 @@
 
 namespace App\Repository;
 
-use App\Entity\Tasks;
-use App\Entity\Checklists;
+use App\Entity\Task;
+use App\Entity\Checklist;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<Tasks>
+ * @extends ServiceEntityRepository<Task>
  */
-class TasksRepository extends ServiceEntityRepository
+class TaskRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Tasks::class);
+        parent::__construct($registry, Task::class);
     }
 
 	/* récupérer les tâches qui ne sont pas associés à cette checlist */
-	public function findTasksNotInChecklist(Checklists $checklist)
+	public function findTasksNotInChecklist(Checklist $checklist)
     {
         return $this->createQueryBuilder('t')
             ->where('t NOT IN (
-                SELECT tasks FROM App\Entity\Checklists c
-                JOIN c.tasks tasks
+                SELECT Task FROM App\Entity\Checklist c
+                JOIN c.tasks Task
                 WHERE c = :checklist
             )')
 		    ->andWhere('t.archived = false')
@@ -35,7 +35,7 @@ class TasksRepository extends ServiceEntityRepository
 
 
     //    /**
-    //     * @return Tasks[] Returns an array of Tasks objects
+    //     * @return Task[] Returns an array of Task objects
     //     */
     //    public function findByExampleField($value): array
     //    {
@@ -49,7 +49,7 @@ class TasksRepository extends ServiceEntityRepository
     //        ;
     //    }
 
-    //    public function findOneBySomeField($value): ?Tasks
+    //    public function findOneBySomeField($value): ?Task
     //    {
     //        return $this->createQueryBuilder('t')
     //            ->andWhere('t.exampleField = :val')

@@ -2,14 +2,14 @@
 
 namespace App\Entity;
 
-use App\Repository\TasksRepository;
+use App\Repository\TaskRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use DateInterval;
 
-#[ORM\Entity(repositoryClass: TasksRepository::class)]
-class Tasks
+#[ORM\Entity(repositoryClass: TaskRepository::class)]
+class Task
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -26,9 +26,9 @@ class Tasks
     private ?bool $archived = false;
 
     /**
-     * @var Collection<int, Checklists>
+     * @var Collection<int, Checklist>
      */
-    #[ORM\ManyToMany(targetEntity: Checklists::class, mappedBy: 'tasks')]
+    #[ORM\ManyToMany(targetEntity: Checklist::class, mappedBy: 'tasks')]
     private Collection $checklists;
 
     public function __construct()
@@ -86,7 +86,7 @@ class Tasks
         return $this->checklists;
     }
 
-    public function addChecklist(Checklists $checklist): static
+    public function addChecklist(Checklist $checklist): static
     {
         if (!$this->checklists->contains($checklist)) {
             $this->checklists->add($checklist);
